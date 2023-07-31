@@ -12,7 +12,7 @@ const requestCountByIP = {};
 
 const app = express();
 const port = process.env.PORT || 3000;
-app.set("trust proxy", true);
+app.set("trust proxy", false);
 
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
