@@ -23,26 +23,6 @@ app.use(compression());
 // Middleware de Helmet
 app.use(helmet());
 
-// Middleware para rate limit por IP
-// Limite de uso de api por IP
-// en este caso son 2 peticones por minuto por IP
-const limiterByIP = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 4, // 2 peticiones por minuto por IP
-  trustProxy: true,
-  keyGenerator: (req) => req.ip, // Usar la dirección IP del cliente como clave
-  handler: (req, res) => {
-    res
-      .status(428)
-      .json({
-        error:
-          "Demasiadas peticiones desde esta IP, por favor, inténtalo nuevamente más tarde.",
-      });
-  },
-});
-
-app.use("/", limiterByIP);
-
 // Middleware para rate limit general de la API
 // en este caso son 10 peticiones por 10 minutos para toda la API
 const limiterGeneral = rateLimit({
@@ -52,7 +32,7 @@ const limiterGeneral = rateLimit({
   handler: (req, res) => {
     res.status(429).json({
       error:
-        "Demasiadas peticiones, por favor, inténtalo nuevamente más tarde.",
+        "limite de peticiones intentanlo en 10 minutos",
     });
   },
 });
