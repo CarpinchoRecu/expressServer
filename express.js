@@ -6,13 +6,10 @@ const rateLimit = require("express-rate-limit");
 const compression = require("compression");
 const helmet = require("helmet");
 
-
-// Objeto para rastrear el número de peticiones por IP
-const requestCountByIP = {};
-
 const app = express();
 const port = process.env.PORT || 3000;
-app.set("trust proxy", false);
+
+app.set("trust proxy", true);
 
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
@@ -37,6 +34,7 @@ const requestsByIP = {};
 const limiterByIP = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
   max: 4, // 2 peticiones por minuto por IP
+  trustProxy: true,
   keyGenerator: (req) => req.ip, // Usar la dirección IP del cliente como clave
   handler: (req, res) => {
     res
@@ -55,6 +53,7 @@ app.use("/", limiterByIP);
 const limiterGeneral = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutos
   max: 100, // 100 peticiones por 10 minutos para toda la API
+  trustProxy: true,
   handler: (req, res) => {
     res.status(429).json({
       error:
