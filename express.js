@@ -6,13 +6,13 @@ const rateLimit = require("express-rate-limit");
 const compression = require("compression");
 const helmet = require("helmet");
 
-app.set("trust proxy", true);
 
 // Objeto para rastrear el número de peticiones por IP
 const requestCountByIP = {};
 
 const app = express();
 const port = process.env.PORT || 3000;
+app.set("trust proxy", true);
 
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
