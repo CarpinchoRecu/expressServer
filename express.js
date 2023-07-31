@@ -48,7 +48,7 @@ const limiterByIP = rateLimit({
   },
 });
 
-app.use("/contactanos", limiterByIP);
+app.use("/", limiterByIP);
 
 // Middleware para rate limit general de la API
 // en este caso son 10 peticiones por 10 minutos para toda la API
