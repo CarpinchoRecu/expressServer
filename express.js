@@ -6,6 +6,8 @@ const rateLimit = require("express-rate-limit");
 const compression = require("compression");
 const helmet = require("helmet");
 
+app.set("trust proxy", true);
+
 // Objeto para rastrear el número de peticiones por IP
 const requestCountByIP = {};
 
@@ -37,7 +39,12 @@ const limiterByIP = rateLimit({
   max: 4, // 2 peticiones por minuto por IP
   keyGenerator: (req) => req.ip, // Usar la dirección IP del cliente como clave
   handler: (req, res) => {
-    res.status(428).json({ error: "Demasiadas peticiones desde esta IP, por favor, inténtalo nuevamente más tarde." });
+    res
+      .status(428)
+      .json({
+        error:
+          "Demasiadas peticiones desde esta IP, por favor, inténtalo nuevamente más tarde.",
+      });
   },
 });
 
