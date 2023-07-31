@@ -6,10 +6,14 @@ const rateLimit = require("express-rate-limit");
 const compression = require("compression");
 const helmet = require("helmet");
 
-dotenv.config(); // Cargar las variables de entorno desde el archivo .env
+// Objeto para rastrear el número de peticiones por IP
+const requestCountByIP = {};
 
 const app = express();
-const port = process.env.PORT || 3000; // Puerto en el que se ejecutará el servidor
+const port = process.env.PORT || 3000;
+
+// Cargar las variables de entorno desde el archivo .env
+dotenv.config();
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,26 +26,48 @@ app.use(compression());
 // Middleware de Helmet
 app.use(helmet());
 
-// Limite de uso de api
-// en este caso son 2 peticones por minuto
-const limiterContactanos = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  max: 2,
-  standardHeaders: true,
-  legacyHeaders: false,
+// Objeto para rastrear las peticiones por IP
+const requestsByIP = {};
+
+// Middleware para rate limit por IP
+// Limite de uso de api por IP
+// en este caso son 2 peticones por minuto por IP
+const limiterByIP = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minuto
+  max: 4, // 2 peticiones por minuto por IP
+  keyGenerator: (req) => req.ip, // Usar la dirección IP del cliente como clave
+  handler: (req, res) => {
+    res.status(428).json({ error: "Demasiadas peticiones desde esta IP, por favor, inténtalo nuevamente más tarde." });
+  },
 });
 
-app.use("/contactanos", limiterContactanos);
+app.use("/contactanos", limiterByIP);
+
+// Middleware para rate limit general de la API
+// en este caso son 10 peticiones por 10 minutos para toda la API
+const limiterGeneral = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutos
+  max: 100, // 100 peticiones por 10 minutos para toda la API
+  handler: (req, res) => {
+    res.status(429).json({
+      error:
+        "Demasiadas peticiones, por favor, inténtalo nuevamente más tarde.",
+    });
+  },
+});
+
+app.use(limiterGeneral);
 
 // Crear la conexión a la base de datos al iniciar el servidor
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
+  connectionLimit: 10,
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
 });
 
-connection.connect((err) => {
+pool.getConnection((err, connection) => {
   if (err) {
     console.error("Error al conectar a la base de datos: ", err);
     return;
@@ -49,7 +75,7 @@ connection.connect((err) => {
   console.log("Conexión exitosa a la base de datos.");
 });
 
-app.post("/contactanos", (req, res) => {
+app.post("/contactanos", limiterByIP, (req, res) => {
   const nombre = req.body.nombre;
   const apellido = req.body.apellido;
   const edad = req.body.edad;
@@ -70,23 +96,35 @@ app.post("/contactanos", (req, res) => {
     localidad,
   ];
 
-  connection.query(sqlContactanos, valuesContactanos, (err, result) => {
+  pool.getConnection((err, connection) => {
     if (err) {
-      console.error(
-        "Error al insertar datos en la base de datos de contactos: ",
-        err
-      );
+      console.error("Error al obtener una conexión de la base de datos: ", err);
       res
         .status(500)
-        .send("Error al insertar datos en la base de datos de contactos.");
-      connection.end();
+        .send("Error al obtener una conexión de la base de datos.");
       return;
     }
 
-    res.send(
-      "Datos insertados correctamente en la base de datos de contactos."
-    );
-    connection.end();
+    // Ejecutar la consulta en la conexión obtenida
+    connection.query(sqlContactanos, valuesContactanos, (err, result) => {
+      // Liberar la conexión una vez que hayamos terminado de usarla
+      connection.release();
+
+      if (err) {
+        console.error(
+          "Error al insertar datos en la base de datos de contactos: ",
+          err
+        );
+        res
+          .status(500)
+          .send("Error al insertar datos en la base de datos de contactos.");
+        return;
+      }
+
+      res.send(
+        "Datos insertados correctamente en la base de datos de contactos."
+      );
+    });
   });
 });
 
