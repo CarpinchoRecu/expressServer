@@ -9,8 +9,6 @@ const helmet = require("helmet");
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.set("trust proxy", true);
-
 // Cargar las variables de entorno desde el archivo .env
 dotenv.config();
 
@@ -24,9 +22,6 @@ app.use(compression());
 
 // Middleware de Helmet
 app.use(helmet());
-
-// Objeto para rastrear las peticiones por IP
-const requestsByIP = {};
 
 // Middleware para rate limit por IP
 // Limite de uso de api por IP
@@ -81,7 +76,7 @@ pool.getConnection((err, connection) => {
   console.log("Conexión exitosa a la base de datos.");
 });
 
-app.post("/contactanos", limiterByIP, (req, res) => {
+app.post("/", limiterByIP, (req, res) => {
   const nombre = req.body.nombre;
   const apellido = req.body.apellido;
   const edad = req.body.edad;
