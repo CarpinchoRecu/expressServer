@@ -56,7 +56,7 @@ pool.getConnection((err, connection) => {
   console.log("Conexión exitosa a la base de datos.");
 });
 
-app.post("/", limiterByIP, (req, res) => {
+app.post("/", limiterGeneral, (req, res) => {
   const nombre = req.body.nombre;
   const apellido = req.body.apellido;
   const edad = req.body.edad;
