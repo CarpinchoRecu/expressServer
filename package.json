@@ -4,7 +4,8 @@
   "description": "",
   "main": "express.js",
   "scripts": {
-    "start": "node express.js"
+    "start": "node express.js",
+    "dev": "nodemon express.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,5 +17,8 @@
     "express-rate-limit": "^6.8.1",
     "helmet": "^7.0.0",
     "mysql2": "^3.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
