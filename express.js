@@ -24,7 +24,6 @@ app.use(compression());
 app.use(helmet());
 
 // Middleware para rate limit general de la API
-// en este caso son 10 peticiones por 10 minutos para toda la API
 const limiterGeneral = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutos
   max: 100, // 100 peticiones por 10 minutos para toda la API
@@ -32,12 +31,12 @@ const limiterGeneral = rateLimit({
   handler: (req, res) => {
     res.status(429).json({
       error:
-        "limite de peticiones intentanlo en 10 minutos",
+        "Limite de peticiones por servidor, intentanlo en 10 minutos",
     });
   },
 });
 
-app.use(limiterGeneral);
+app.use("/", limiterGeneral);
 
 // Crear la conexión a la base de datos al iniciar el servidor
 const pool = mysql.createPool({
@@ -55,6 +54,7 @@ pool.getConnection((err, connection) => {
   }
   console.log("Conexión exitosa a la base de datos.");
 });
+
 
 app.post("/", limiterGeneral, (req, res) => {
   const nombre = req.body.nombre;
