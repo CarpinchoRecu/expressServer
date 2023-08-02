@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "express.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node express.js",
     "dev": "nodemon express.js"
