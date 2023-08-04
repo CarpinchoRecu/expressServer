@@ -49,10 +49,10 @@ const pool = mysql.createPool({
 
 pool.getConnection((err, connection) => {
   if (err) {
-    console.error("Error al conectar a la base de datos: ", err);
+    console.error("Error al conectar a la base de datos contactanos: ", err);
     return;
   }
-  console.log("Conexión exitosa a la base de datos.");
+  console.log("Conexión exitosa a la base de datos contactanos.");
 });
 
 
