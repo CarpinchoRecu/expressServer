@@ -28,7 +28,7 @@ const pool = mysql.createPool({
 });
 
 // Ruta para manejar la solicitud de trabajo
-router.post("/trabajo", upload.single("cv"), (req, res) => {
+router.post("/", upload.single("cv"), (req, res) => {
     const nombre = req.body.nombre;
     const apellido = req.body.apellido;
     const edad = req.body.edad;
