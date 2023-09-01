@@ -35,7 +35,7 @@ function enviarMensaje(req, res) {
 
     // Definir la consulta SQL para insertar en la base de datos
     const sqlContactanos =
-        "INSERT INTO u352676213_form_contactos (nombre, apellido, edad, telefono, email, provincia, localidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO contactos (nombre, apellido, edad, telefono, email, provincia, localidad) VALUES (?, ?, ?, ?, ?, ?, ?)";
     const valuesContactanos = [
         nombre,
         apellido,
