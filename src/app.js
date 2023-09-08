@@ -14,7 +14,7 @@ app.use(compression());
 dotenv.config({ path: "./.env" });
 
 // Configuración de puerto
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 443;
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutos
