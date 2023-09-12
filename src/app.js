@@ -14,7 +14,7 @@ app.use(compression());
 dotenv.config({ path: "./.env" });
 
 // Configuración de puerto
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 4000;
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutos
@@ -30,6 +30,10 @@ const limiter = rateLimit({
 // Importar rutas
 const contactoRoutes = require("./routes/contacto.js", limiter);
 const trabajoRoutes = require("./routes/trabajo.js", limiter);
+
+app.get("/", (req, res) =>
+  res.send(`Servidor Express en funcionamiento en el puerto ${PORT}`)
+);
 
 // Montar rutas
 app.use("/contacto", contactoRoutes);
