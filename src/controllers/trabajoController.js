@@ -132,7 +132,7 @@ function enviarCorreoElectronico(
 
     const mailOptions = {
         from: process.env.MAIL_USER,
-        to: "cv@asessaludsrl.com",
+        to: process.env.MAIL_USER,
         subject: "Solicitud de trabajo",
         text: `Nombre: ${nombre}
     Apellido: ${apellido}
