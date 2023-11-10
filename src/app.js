@@ -30,6 +30,7 @@ const limiter = rateLimit({
 // Importar rutas
 const contactoRoutes = require("./routes/contacto.js", limiter);
 const trabajoRoutes = require("./routes/trabajo.js", limiter);
+const personaRoutes = require("./routes/persona.js", limiter);
 
 app.get("/", (req, res) =>
   res.send(`Servidor Express en funcionamiento en el puerto ${PORT}`)
@@ -38,6 +39,7 @@ app.get("/", (req, res) =>
 // Montar rutas
 app.use("/contacto", contactoRoutes);
 app.use("/trabajo", trabajoRoutes); // Pasar el middleware multer a trabajoRoutes
+app.use("/persona", personaRoutes); // Pasar el middleware multer a trabajoRoutes
 
 app.options("*", function (req, res) {
   res.sendStatus(200);
