@@ -20,7 +20,7 @@ function enviarFormulario(req, res) {
     const provincia = req.body.provincia;
     const localidad = req.body.localidad;
     const regimen = req.body.regimen;
-    const fechaDeEnvio = new Date().toLocaleDateString("es-AR");
+    const fechaDeEnvio = new Date().toISOString().slice(0, 10);
 
     // Validar que los campos requeridos estén presentes
     if (

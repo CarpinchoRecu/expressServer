@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const compression = require("compression");
 const dotenv = require("dotenv");
 const rateLimit = require("express-rate-limit");
+const path = require("path"); // Añade esta línea para trabajar con rutas de archivos
 
 // Configuración de middlewares
 app.use(cors());
@@ -27,19 +28,20 @@ const limiter = rateLimit({
   },
 });
 
+// Ruta para archivos estáticos
+app.use(express.static(path.join(__dirname, "public")));
+
 // Importar rutas
-const contactoRoutes = require("./routes/contacto.js", limiter);
 const trabajoRoutes = require("./routes/trabajo.js", limiter);
 const personaRoutes = require("./routes/persona.js", limiter);
 
 app.get("/", (req, res) =>
-  res.send(`Servidor Express en funcionamiento en el puerto ${PORT}`)
+  res.sendFile(path.join(__dirname, "public", "index.html"))
 );
 
 // Montar rutas
-app.use("/contacto", contactoRoutes);
 app.use("/trabajo", trabajoRoutes); // Pasar el middleware multer a trabajoRoutes
-app.use("/persona", personaRoutes); // Pasar el middleware multer a trabajoRoutes
+app.use("/persona", personaRoutes);
 
 app.options("*", function (req, res) {
   res.sendStatus(200);
