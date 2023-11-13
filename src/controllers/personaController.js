@@ -20,7 +20,7 @@ function enviarFormulario(req, res) {
     const provincia = req.body.provincia;
     const localidad = req.body.localidad;
     const regimen = req.body.regimen;
-    const fechaDeEnvio = req.body.regimen;
+    const fechaDeEnvio = new Date().toLocaleDateString("es-AR");
 
     // Validar que los campos requeridos estén presentes
     if (
@@ -39,7 +39,7 @@ function enviarFormulario(req, res) {
 
     // Definir la consulta SQL para insertar en la base de datos
     const sqlContactanos =
-        "INSERT INTO Persona (nombre, apellido, edad, telefono, email, provincia, localidad, regimen, fechaDeEnvio) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO Persona (nombre, apellido, edad, telefono, email, provincia, localidad, regimen, fechaDeEnvio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     const valuesContactanos = [
         nombre,
         apellido,
@@ -55,7 +55,10 @@ function enviarFormulario(req, res) {
     // Ejecutar la consulta en la base de datos
     pool.getConnection((err, connection) => {
         if (err) {
-            console.error("Error al obtener una conexión de la base de datos persona: ", err);
+            console.error(
+                "Error al obtener una conexión de la base de datos persona: ",
+                err
+            );
             res
                 .status(500)
                 .send("Error al obtener una conexión de la base de datos persona.");
@@ -81,6 +84,7 @@ function enviarFormulario(req, res) {
             res.send(
                 "Datos insertados correctamente en la base de datos de persona."
             );
+            console.log("Datos de posible afiliado enviados correctamente a la base de datos")
         });
     });
 }
