@@ -2,7 +2,7 @@ const mysql = require("mysql2");
 
 // Crear la conexión a la base de datos (asegúrate de configurar las variables de entorno)
 const pool = mysql.createPool({
-    connectionLimit: 10,
+    connectionLimit: 200,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -39,7 +39,7 @@ function enviarFormulario(req, res) {
 
     // Definir la consulta SQL para insertar en la base de datos
     const sqlContactanos =
-        "INSERT INTO Persona (nombre, apellido, edad, telefono, email, provincia, localidad, regimen, fechaDeEnvio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO persona (nombre, apellido, edad, telefono, email, provincia, localidad, regimen, fechaDeEnvio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     const valuesContactanos = [
         nombre,
         apellido,
