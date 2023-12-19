@@ -5,20 +5,12 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const multer = require('multer');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads/"); // Carpeta donde se guardarán los archivos
-    },
-    filename: (req, file, cb) => {
-        cb(null, new Date().toISOString().slice(0, 10) + "-" + file.originalname); // Renombrar el archivo
-    },
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Crear la conexión a la base de datos (asegúrate de configurar las variables de entorno)
 const pool = mysql.createPool({
-    connectionLimit: 10,
+    connectionLimit: 200,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
