@@ -1,1 +1,13 @@
-node_modules
+# Directorios
+node_modules/
+dist/
+
+# Archivos de configuración
+.env
+
+# Archivo de logs
+*.log
+
+# Dependiendo del editor/IDE
+.vscode/
+.idea/
