@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mysql = require("mysql2");
 const nodemailer = require("nodemailer");
-const fs = require("fs");
 const multer = require('multer');
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads" });
 
 // Crear la conexión a la base de datos (asegúrate de configurar las variables de entorno)
 const pool = mysql.createPool({
@@ -133,12 +132,6 @@ function enviarCorreoElectronico(
             console.log("Correo electrónico enviado:", info.response);
             res.send("Datos enviados y correo electrónico enviado correctamente.");
         }
-
-        fs.unlink(cvFile.path, (err) => {
-            if (err) {
-                console.error("Error al eliminar el archivo temporal:", err);
-            }
-        });
     });
 }
 
