@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const compression = require("compression");
 const dotenv = require("dotenv");
 const path = require("path"); // Añade esta línea para trabajar con rutas de archivos
+const {whatsapp} = require("./config/whatsapp.js")
 
 // Configuración de middlewares
 app.use(cors());
@@ -41,6 +42,13 @@ app.use(function (err, req, res, next) {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor Express en funcionamiento en el puerto ${PORT} http://localhost:${PORT}/`);
-});
+whatsapp
+  .initialize()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Servidor en el puerto ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Error durante la inicialización de WhatsApp:", error);
+  });

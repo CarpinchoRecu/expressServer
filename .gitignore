@@ -11,3 +11,10 @@ dist/
 # Dependiendo del editor/IDE
 .vscode/
 .idea/
+
+.wwebjs_auth/*
+.wwebjs_cache/*
+
+
+
+

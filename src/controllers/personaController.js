@@ -1,6 +1,6 @@
-const mysql = require("mysql2");
+const { whatsapp } = require('../config/whatsapp.js');
+const mysql = require("mysql2/promise");
 
-// Crear la conexión a la base de datos (asegúrate de configurar las variables de entorno)
 const pool = mysql.createPool({
     connectionLimit: 200,
     host: process.env.DB_HOST,
@@ -9,9 +9,9 @@ const pool = mysql.createPool({
     database: process.env.DB_DATABASE,
 });
 
-// Función para manejar la solicitud de contacto
-function enviarFormulario(req, res) {
-    // Obtener datos del formulario desde req.body
+async function enviarFormulario(req, res) {
+    let connection; // Declarar la variable connection aquí
+
     const nombre = req.body.nombre;
     const apellido = req.body.apellido;
     const edad = req.body.edad;
@@ -22,73 +22,38 @@ function enviarFormulario(req, res) {
     const regimen = req.body.regimen;
     const fechaDeEnvio = new Date().toISOString().slice(0, 10);
 
-    // Validar que los campos requeridos estén presentes
-    if (
-        !nombre ||
-        !apellido ||
-        !edad ||
-        !telefono ||
-        !email ||
-        !provincia ||
-        !localidad ||
-        !regimen ||
-        !fechaDeEnvio
-    ) {
+    if (!nombre || !apellido || !edad || !telefono || !email || !provincia || !localidad || !regimen || !fechaDeEnvio) {
         return res.status(400).json({ error: "Todos los campos son obligatorios" });
     }
 
-    // Definir la consulta SQL para insertar en la base de datos
-    const sqlContactanos =
-        "INSERT INTO persona (nombre, apellido, edad, telefono, email, provincia, localidad, regimen, fechaDeEnvio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    const valuesContactanos = [
-        nombre,
-        apellido,
-        edad,
-        telefono,
-        email,
-        provincia,
-        localidad,
-        regimen,
-        fechaDeEnvio,
-    ];
+    const sqlContactanos = "INSERT INTO persona (nombre, apellido, edad, telefono, email, provincia, localidad, regimen, fechaDeEnvio) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const valuesContactanos = [nombre, apellido, edad, telefono, email, provincia, localidad, regimen, fechaDeEnvio];
 
-    // Ejecutar la consulta en la base de datos
-    pool.getConnection((err, connection) => {
-        if (err) {
-            console.error(
-                "Error al obtener una conexión de la base de datos persona: ",
-                err
-            );
-            res
-                .status(500)
-                .send("Error al obtener una conexión de la base de datos persona.");
-            return;
-        }
+    try {
+        connection = await pool.getConnection();
 
-        // Ejecutar la consulta en la conexión obtenida
-        connection.query(sqlContactanos, valuesContactanos, (err, result) => {
-            // Liberar la conexión una vez que hayamos terminado de usarla
+        // Utiliza la versión basada en promesas del método query
+        await connection.query(sqlContactanos, valuesContactanos);
+
+        // Enviar mensaje a WhatsApp
+        const chatId = telefono.substring(1) + "@c.us";
+        const mensaje = "Hola, gracias por enviar tu formulario a AsesSalud. ¿Cómo podemos ayudarte?";
+        await whatsapp.sendMessage(chatId, mensaje);
+
+        res.send("Datos insertados correctamente en la base de datos de persona y mensaje enviado a WhatsApp.");
+        console.log("Datos de posible afiliado enviados correctamente a la base de datos y mensaje de WhatsApp enviado.");
+    } catch (error) {
+        console.error("Error al insertar datos o enviar mensaje: ", error);
+        res.status(500).send("Error al procesar el formulario.");
+    } finally {
+        // Liberar la conexión una vez que hayamos terminado de usarla
+        if (connection) {
             connection.release();
-
-            if (err) {
-                console.error(
-                    "Error al insertar datos en la base de datos de persona: ",
-                    err
-                );
-                res
-                    .status(500)
-                    .send("Error al insertar datos en la base de datos de persona.");
-                return;
-            }
-
-            res.send(
-                "Datos insertados correctamente en la base de datos de persona."
-            );
-            console.log("Datos de posible afiliado enviados correctamente a la base de datos")
-        });
-    });
+        }
+    }
 }
 
 module.exports = {
     enviarFormulario: enviarFormulario,
 };
+
