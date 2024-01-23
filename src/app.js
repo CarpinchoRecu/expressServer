@@ -4,7 +4,7 @@ const cors = require("cors");
 const helmet = require("helmet");
 const compression = require("compression");
 const dotenv = require("dotenv");
-const path = require("path"); // Añade esta línea para trabajar con rutas de archivos
+const path = require("path");
 const {whatsapp} = require("./config/whatsapp.js")
 
 // Configuración de middlewares
