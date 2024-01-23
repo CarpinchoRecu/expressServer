@@ -1,3 +1,4 @@
+const logger = require('../config/logger.js');
 const { whatsapp } = require('../config/whatsapp.js');
 const mysql = require("mysql2/promise");
 
@@ -41,9 +42,9 @@ async function enviarFormulario(req, res) {
         await whatsapp.sendMessage(chatId, mensaje);
 
         res.send("Datos insertados correctamente en la base de datos de persona y mensaje enviado a WhatsApp.");
-        console.log("Datos de posible afiliado enviados correctamente a la base de datos y mensaje de WhatsApp enviado.");
+        logger.info("Datos de posible afiliado enviados correctamente a la base de datos y mensaje de WhatsApp enviado.");
     } catch (error) {
-        console.error("Error al insertar datos o enviar mensaje: ", error);
+        logger.error("Error al insertar datos o enviar mensaje: ", error);
         res.status(500).send("Error al procesar el formulario.");
     } finally {
         // Liberar la conexión una vez que hayamos terminado de usarla

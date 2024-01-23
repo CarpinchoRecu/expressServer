@@ -3,6 +3,7 @@ const router = express.Router();
 const mysql = require("mysql2");
 const nodemailer = require("nodemailer");
 const multer = require('multer');
+const logger = require('../config/logger');
 
 const upload = multer({ dest: "uploads" });
 
@@ -50,7 +51,7 @@ router.post("/", upload.single("cv"), (req, res) => {
 
     pool.getConnection((err, connection) => {
         if (err) {
-            console.error("Error al obtener una conexión de la base de datos trabajo: ", err);
+            logger.error("Error al obtener una conexión de la base de datos trabajo: ", err);
             res.status(500).send("Error al obtener una conexión de la base de datos trabajo.");
             return;
         }
@@ -59,7 +60,7 @@ router.post("/", upload.single("cv"), (req, res) => {
             connection.release();
 
             if (err) {
-                console.error("Error al insertar datos en la base de datos de trabajo: ", err);
+                logger.error("Error al insertar datos en la base de datos de trabajo: ", err);
                 res.status(500).send("Error al insertar datos en la base de datos de trabajo.");
                 return;
             }
@@ -126,10 +127,10 @@ function enviarCorreoElectronico(
 
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.error("Error al enviar el correo electrónico:", error);
+            logger.error("Error al enviar el correo electrónico:", error);
             res.status(500).send("Error al enviar el correo electrónico.");
         } else {
-            console.log("Correo electrónico enviado:", info.response);
+            logger.info("Correo electrónico enviado:", info.response);
             res.send("Datos enviados y correo electrónico enviado correctamente.");
         }
     });
