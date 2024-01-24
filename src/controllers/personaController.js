@@ -16,7 +16,7 @@ async function enviarFormulario(req, res) {
     const nombre = req.body.nombre;
     const apellido = req.body.apellido;
     const edad = req.body.edad;
-    const telefono = req.body.telefono;
+    const telefono = "+549" + req.body.telefono;
     const email = req.body.email;
     const provincia = req.body.provincia;
     const localidad = req.body.localidad;

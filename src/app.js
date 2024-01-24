@@ -32,7 +32,7 @@ app.get("/", (req, res) =>
 // Montar rutas
 app.use("/trabajo", trabajoRoutes); // Pasar el middleware multer a trabajoRoutes
 app.use("/persona", personaRoutes);
-app.get('/whatsapp-qr', (req, res) => {
+app.get('/qr', (req, res) => {
   // Escuchar el evento 'qrCode'
   whatsappEmitter.once('qrCode', (qrDataURL) => {
     // Envia el código QR como respuesta a la solicitud GET
