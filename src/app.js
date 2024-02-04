@@ -24,14 +24,16 @@ app.use(express.static(path.join(__dirname, "public")));
 // Importar rutas
 const trabajoRoutes = require("./routes/trabajo.js");
 const personaRoutes = require("./routes/persona.js");
+const datosRoutes = require("./routes/datos.js");
 
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "index.html"))
 );
 
 // Montar rutas
-app.use("/trabajo", trabajoRoutes); // Pasar el middleware multer a trabajoRoutes
+app.use("/trabajo", trabajoRoutes);
 app.use("/persona", personaRoutes);
+app.use("/datos", datosRoutes);
 app.get('/qr', (req, res) => {
   // Escuchar el evento 'qrCode'
   whatsappEmitter.once('qrCode', (qrDataURL) => {
@@ -62,7 +64,7 @@ app.use(function (err, req, res, next) {
 });
 
 app.listen(PORT, () => {
-  logger.info(`Servidor en el puerto ${PORT}`);
+  logger.info(`Servidor en el puerto http://localhost:${PORT}/ `);
 });
 
 whatsapp
