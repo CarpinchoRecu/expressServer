@@ -6,12 +6,23 @@ const compression = require("compression");
 const dotenv = require("dotenv");
 const path = require("path");
 const logger = require('./config/logger.js');
-const { whatsapp, whatsappEmitter } = require('./config/whatsapp.js');
+// const { whatsapp, whatsappEmitter } = require('./config/whatsapp.js');
 
 // Configuración de middlewares
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        // otras directivas
+      },
+    },
+  })
+);
+
 app.use(compression());
 dotenv.config({ path: "./.env" });
 
@@ -19,12 +30,13 @@ dotenv.config({ path: "./.env" });
 const PORT = process.env.PORT || 4000;
 
 // Ruta para archivos estáticos
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Importar rutas
 const trabajoRoutes = require("./routes/trabajo.js");
 const personaRoutes = require("./routes/persona.js");
 const datosRoutes = require("./routes/datos.js");
+const chacoRoutes = require("./routes/chaco.js");
 
 app.get("/", (req, res) =>
   res.sendFile(path.join(__dirname, "public", "index.html"))
@@ -34,24 +46,25 @@ app.get("/", (req, res) =>
 app.use("/trabajo", trabajoRoutes);
 app.use("/persona", personaRoutes);
 app.use("/datos", datosRoutes);
-app.get('/qr', (req, res) => {
-  // Escuchar el evento 'qrCode'
-  whatsappEmitter.once('qrCode', (qrDataURL) => {
-    // Envia el código QR como respuesta a la solicitud GET
-    res.send(`
-      <html>
-        <body>
-          <img src="${qrDataURL}" alt="WhatsApp QR Code">
-        </body>
-      </html>
-    `);
-  });
+app.use("/chaco", chacoRoutes);
+// app.get('/qr', (req, res) => {
+//   // Escuchar el evento 'qrCode'
+//   whatsappEmitter.once('qrCode', (qrDataURL) => {
+//     // Envia el código QR como respuesta a la solicitud GET
+//     res.send(`
+//       <html>
+//         <body>
+//           <img src="${qrDataURL}" alt="WhatsApp QR Code">
+//         </body>
+//       </html>
+//     `);
+//   });
 
-  // Si el cliente está listo y ya tiene un código QR generado, emite el evento manualmente
-  if (whatsapp.isReady) {
-    whatsappEmitter.emit('qrCode', 'URL_DE_TU_CODIGO_QR_POR_DEFECTO');
-  }
-});
+//   // Si el cliente está listo y ya tiene un código QR generado, emite el evento manualmente
+//   if (whatsapp.isReady) {
+//     whatsappEmitter.emit('qrCode', 'URL_DE_TU_CODIGO_QR_POR_DEFECTO');
+//   }
+// });
 
 app.options("*", function (req, res) {
   res.sendStatus(200);
@@ -67,8 +80,8 @@ app.listen(PORT, () => {
   logger.info(`Servidor en el puerto http://localhost:${PORT}/ `);
 });
 
-whatsapp
-  .initialize()
-  .catch((error) => {
-    logger.error("Error durante la inicialización de WhatsApp:", error);
-  });
+// whatsapp
+//   .initialize()
+//   .catch((error) => {
+//     logger.error("Error durante la inicialización de WhatsApp:", error);
+//   });

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100..700&display=swap" rel="stylesheet" />
+    <title>Chaco</title>
+</head>
+
+<body class="arima">
+    <main>
+        <img src="../images/LogoOspida.png" alt="LOGO OSPIDA" />
+        <a class="mas__importante" href="https://asessaludsrl.com/cartillaChaco.pdf" target="_blank"
+            rel="noopener noreferrer">
+            <section>
+                <p>Cobertura a nivel nacional</p>
+                <span>Ver cartilla completa</span>
+            </section>
+        </a>
+        <a id="beneficios">
+            <section>
+                <p id="beneficio">Beneficios</p>
+            </section>
+        </a>
+        <a href="https://api.whatsapp.com/send?phone=5491136674217&text=Hola%2C%20quiero%20asesoramiento..."
+            target="_blank" rel="noopener noreferrer">
+            <section>
+                <p>Contacto</p>
+            </section>
+        </a>
+        <img src="../images/Logo.png" alt="LOGO ASESSALUD" />
+    </main>
+</body>
+
+</html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const beneficios = document.getElementById("beneficios");
+        const beneficio = document.getElementById("beneficio");
+        const enlaces = document.querySelectorAll("main a:not(#beneficios)");
+
+        if (beneficios && beneficio) {
+            beneficios.addEventListener("click", mostrarBeneficios);
+        }
+
+        function mostrarBeneficios() {
+            enlaces.forEach((enlace) => {
+                enlace.classList.toggle("oculto");
+            });
+
+            if (!beneficios.classList.contains("visible")) {
+                const parrafo1 = document.createElement("h4");
+                const parrafo2 = document.createElement("h6");
+                const parrafo3 = document.createElement("h5");
+                parrafo2.textContent = "40% 70%";
+                parrafo1.innerHTML = "de Descuento en";
+                parrafo3.innerHTML = "Farmacias Adheridas";
+                const saltoLinea = document.createElement("br");
+                beneficio.textContent = ""; // Limpiar el contenido actual
+                beneficio.appendChild(parrafo2);
+                beneficio.appendChild(parrafo1);
+                beneficio.appendChild(parrafo3);
+                beneficio.appendChild(saltoLinea);
+            } else {
+                enlaces.forEach((enlace) => {
+                    enlace.classList.remove("oculto");
+                });
+                beneficio.textContent = "Beneficios";
+            }
+
+            beneficios.classList.toggle("visible");
+        }
+    });
+</script>
+
+<style>
+    html,
+    body {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+            sans-serif, sans-serif;
+        background-color: #eeefed;
+    }
+
+    h4{
+        text-align: center;
+        font-size: 18px;
+        color: #1e2e22;
+    }
+
+    h6{
+        font-size: 30px;
+        color: #961b1b;
+    }
+
+    h5{
+        text-align: center;
+        font-size: 22px;
+        color: #1e2e22;
+    }
+
+
+
+    .oculto {
+        display: none;
+    }
+
+    .visible {
+        height: 500px;
+        display: flex;
+    }
+
+    .mas__importante {
+        height: 200px;
+    }
+
+    .arima {
+        font-family: "Arima", system-ui;
+        font-optical-sizing: auto;
+        font-style: normal;
+    }
+
+    a {
+        text-decoration: none;
+        color: #1e2e22;
+        width: 100%;
+        height: 130px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    img {
+        width: 100px;
+        height: 100px;
+    }
+
+    * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+    }
+
+    body {
+        overflow: hidden;
+    }
+
+    main {
+        text-align: center;
+        padding: 20px;
+        box-shadow: 0 3px 15px 4px #00000042;
+        border-radius: 8px;
+        flex-direction: column;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        height: 90%;
+        width: 90%;
+        border-radius: 9px;
+        background-color: rgba(150, 177, 151, 0.86);
+    }
+
+    section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background-color: #eeefed;
+        padding: 10px;
+        height: 100%;
+        width: 90%;
+        box-shadow: 0 4px 14px 7px #00000042;
+        border-radius: 10px;
+        transition: 0.3s ease;
+    }
+
+    section:hover {
+        scale: 1.06;
+        box-shadow: 0 0px 20px 10px #0000002a;
+    }
+
+    p {
+        font-size: 20px;
+        font-weight: bold;
+        color: #1e2e22;
+    }
+
+    span {
+        font-size: 15px;
+        color: #1e2e22;
+    }
+</style>
